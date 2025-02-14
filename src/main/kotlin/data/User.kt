@@ -9,5 +9,6 @@ import org.bson.types.ObjectId
 data class User(
     @BsonId val id: String = ObjectId().toString(),
     val username: String,
-    val passwordHash: String
+    val password: String,
+    val salt: String
 )

@@ -2,6 +2,7 @@ package com.example
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.example.di.mainModule
 import com.mongodb.client.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
@@ -20,14 +21,5 @@ import org.koin.logger.slf4jLogger
 import org.slf4j.event.*
 
 fun Application.configureFrameworks() {
-    install(Koin) {
-        slf4jLogger()
-        modules(module {
-            single<HelloService> {
-                HelloService {
-                    println(environment.log.info("Hello, World!"))
-                }
-            }
-        })
-    }
+
 }

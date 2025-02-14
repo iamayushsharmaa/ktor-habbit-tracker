@@ -2,6 +2,7 @@ package com.example
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.example.security.token.TokenConfig
 import com.mongodb.client.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
@@ -19,24 +20,21 @@ import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
 import org.slf4j.event.*
 
-fun Application.configureSecurity() {
-    // Please read the jwt property from the config file if you are using EngineMain
-    val jwtAudience = "jwt-audience"
-    val jwtDomain = "https://jwt-provider-domain/"
-    val jwtRealm = "ktor sample app"
-    val jwtSecret = "secret"
+fun Application.configureSecurity(config: TokenConfig) {
     authentication {
         jwt {
-            realm = jwtRealm
+            realm = this@configureSecurity.environment.config.property("jwt.Realm").getString()
             verifier(
                 JWT
-                    .require(Algorithm.HMAC256(jwtSecret))
-                    .withAudience(jwtAudience)
-                    .withIssuer(jwtDomain)
+                    .require(Algorithm.HMAC256(config.secret))
+                    .withAudience(config.audience)
+                    .withIssuer(config.issuer)
                     .build()
             )
             validate { credential ->
-                if (credential.payload.audience.contains(jwtAudience)) JWTPrincipal(credential.payload) else null
+                if (credential.payload.audience.contains(config.audience)) {
+                    JWTPrincipal(credential.payload)
+                } else null
             }
         }
     }
