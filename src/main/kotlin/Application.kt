@@ -1,14 +1,11 @@
 package com.example
 
-import com.example.data.User
-import com.example.di.mainModule
-import com.example.repository.UserDataSource
-import com.example.repository.UserDataSourceImpl
+import com.example.data.user.User
+import com.example.data.user.UserDataSource
+import com.example.data.user.UserDataSourceImpl
 import com.example.security.hashing.SHA256HashingService
 import com.example.security.token.JwtTokenService
 import com.example.security.token.TokenConfig
-import com.example.security.token.TokenService
-import com.mongodb.ConnectionString
 import com.mongodb.client.MongoClient
 import com.mongodb.client.MongoClients
 import io.ktor.server.application.*
@@ -65,5 +62,5 @@ fun Application.module() {
     configureFrameworks()
     // configureDatabases()
     configureMonitoring()
-    configureRouting()
+    configureRouting(hashingService,userDataSource,tokenService,tokenConfig)
 }

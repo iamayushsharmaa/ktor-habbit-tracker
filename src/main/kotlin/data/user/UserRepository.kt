@@ -1,7 +1,4 @@
-package com.example.repository
-
-import com.example.data.User
-import com.mongodb.client.MongoDatabase
+package com.example.data.user
 
 interface UserDataSource{
     suspend fun getUserByUsername(username : String) : User?

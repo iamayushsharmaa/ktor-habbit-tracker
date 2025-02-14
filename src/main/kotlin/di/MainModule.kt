@@ -1,7 +1,7 @@
 package com.example.di
 
-import com.example.repository.UserDataSource
-import com.example.repository.UserDataSourceImpl
+import com.example.data.user.UserDataSource
+import com.example.data.user.UserDataSourceImpl
 import com.mongodb.ConnectionString
 import com.mongodb.client.MongoClient
 import com.mongodb.client.MongoClients

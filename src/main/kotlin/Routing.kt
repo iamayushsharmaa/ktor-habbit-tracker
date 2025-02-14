@@ -2,6 +2,10 @@ package com.example
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.example.data.user.UserDataSource
+import com.example.security.hashing.HashingService
+import com.example.security.token.TokenConfig
+import com.example.security.token.TokenService
 import com.mongodb.client.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
@@ -19,8 +23,19 @@ import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
 import org.slf4j.event.*
 
-fun Application.configureRouting() {
+fun Application.configureRouting(
+    hashingService: HashingService,
+    userDataSource: UserDataSource,
+    tokenService: TokenService,
+    tokenConfig: TokenConfig
+) {
     routing {
+        signUp(hashingService,userDataSource)
+        signIn(hashingService,userDataSource,tokenService,tokenConfig)
+        authenticate()
+        getSecretInfo()
+
+
         get("/") {
             call.respondText("Hello World!")
         }

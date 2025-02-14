@@ -1,14 +1,12 @@
-package com.example.repository
+package com.example.data.user
 
-import com.example.data.User
 import com.mongodb.client.MongoDatabase
 import com.mongodb.client.model.Filters
 import org.bson.conversions.Bson
-import org.koin.java.KoinJavaComponent.inject
 
 class UserDataSourceImpl(
     db : MongoDatabase
-) : UserDataSource{
+) : UserDataSource {
 
     companion object{
         private val USER_COLLECTION  = "User"
