@@ -1,4 +1,4 @@
-package com.example.data.user
+package com.example.data.auth.user
 
 import com.mongodb.client.MongoDatabase
 import com.mongodb.client.model.Filters

@@ -1,8 +1,11 @@
 package com.example
 
-import com.example.data.user.User
-import com.example.data.user.UserDataSource
-import com.example.data.user.UserDataSourceImpl
+import com.example.data.auth.user.User
+import com.example.data.auth.user.UserDataSource
+import com.example.data.auth.user.UserDataSourceImpl
+import com.example.data.habits.repository.Categories
+import com.example.data.habits.repository.CategoryRepository
+import com.example.data.habits.repository.CategoryRepositoryImpl
 import com.example.security.hashing.SHA256HashingService
 import com.example.security.token.JwtTokenService
 import com.example.security.token.TokenConfig
@@ -11,6 +14,7 @@ import com.mongodb.client.MongoClients
 import io.ktor.server.application.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.koin.ktor.ext.inject
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
@@ -33,6 +37,9 @@ fun Application.module() {
             }
             single<UserDataSource> {
                 UserDataSourceImpl(get())
+            }
+            single<CategoryRepository>{
+                CategoryRepositoryImpl(get())
             }
         })
     }
@@ -57,10 +64,17 @@ fun Application.module() {
         userDataSource.insertUser(user)
     }
 
+    val categoryRepository by inject<CategoryRepository>()
+
+    runBlocking {
+        if (categoryRepository.getAllCategory().isEmpty()) {
+            categoryRepository.insertAllCategory(Categories.categories)
+        }
+    }
+
     configureSerialization()
     configureSecurity(tokenConfig)
     configureFrameworks()
-    // configureDatabases()
     configureMonitoring()
-    configureRouting(hashingService,userDataSource,tokenService,tokenConfig)
+    configureRouting(hashingService, userDataSource, tokenService, tokenConfig, categoryRepository)
 }

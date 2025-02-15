@@ -2,7 +2,9 @@ package com.example
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import com.example.data.user.UserDataSource
+import com.example.data.auth.user.UserDataSource
+import com.example.data.habits.repository.CategoryRepository
+import com.example.data.habits.route.category
 import com.example.security.hashing.HashingService
 import com.example.security.token.TokenConfig
 import com.example.security.token.TokenService
@@ -27,7 +29,8 @@ fun Application.configureRouting(
     hashingService: HashingService,
     userDataSource: UserDataSource,
     tokenService: TokenService,
-    tokenConfig: TokenConfig
+    tokenConfig: TokenConfig,
+    categoryRepository: CategoryRepository
 ) {
     routing {
         signUp(hashingService,userDataSource)
@@ -35,6 +38,8 @@ fun Application.configureRouting(
         authenticate()
         getSecretInfo()
 
+
+        category(categoryRepository)
 
         get("/") {
             call.respondText("Hello World!")

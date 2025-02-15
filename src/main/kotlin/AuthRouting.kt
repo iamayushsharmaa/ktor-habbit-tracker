@@ -1,10 +1,10 @@
 package com.example
 
 import com.example.authenticate
-import com.example.data.request.AuthRequest
-import com.example.data.response.AuthResponse
-import com.example.data.user.User
-import com.example.data.user.UserDataSource
+import com.example.data.auth.request.AuthRequest
+import com.example.data.auth.response.AuthResponse
+import com.example.data.auth.user.User
+import com.example.data.auth.user.UserDataSource
 import com.example.security.hashing.HashingService
 import com.example.security.hashing.SaltedHash
 import com.example.security.token.TokenClaim
