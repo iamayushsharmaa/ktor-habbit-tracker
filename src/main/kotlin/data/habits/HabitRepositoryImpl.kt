@@ -22,6 +22,16 @@ class HabitRepositoryImpl(
         return habits.find(Filters.eq("userId", userId)).toList()
     }
 
+    override suspend fun getHabitById(userId: String, habitId: String): Habit? {
+        return habits.find(
+            Filters.and(
+                Filters.eq("_id", habitId),
+                Filters.eq("userId", userId)
+            )
+        ).firstOrNull()
+    }
+
+
     override suspend fun updateHabit(userId: String,habit: Habit): Boolean {
         val filter = Filters.and(
             Filters.eq("_id", habit.id),
