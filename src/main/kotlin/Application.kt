@@ -3,6 +3,8 @@ package com.example
 import com.example.data.auth.user.User
 import com.example.data.auth.user.UserDataSource
 import com.example.data.auth.user.UserDataSourceImpl
+import com.example.data.habits.HabitRepository
+import com.example.data.habits.HabitRepositoryImpl
 import com.example.data.habits.repository.Categories
 import com.example.data.habits.repository.CategoryRepository
 import com.example.data.habits.repository.CategoryRepositoryImpl
@@ -41,6 +43,9 @@ fun Application.module() {
             single<CategoryRepository>{
                 CategoryRepositoryImpl(get())
             }
+            single<HabitRepository> {
+                HabitRepositoryImpl(get())
+            }
         })
     }
 
@@ -65,7 +70,7 @@ fun Application.module() {
     }
 
     val categoryRepository by inject<CategoryRepository>()
-
+    val habitRepository by inject<HabitRepository>()
     runBlocking {
         if (categoryRepository.getAllCategory().isEmpty()) {
             categoryRepository.insertAllCategory(Categories.categories)
@@ -76,5 +81,5 @@ fun Application.module() {
     configureSecurity(tokenConfig)
     configureFrameworks()
     configureMonitoring()
-    configureRouting(hashingService, userDataSource, tokenService, tokenConfig, categoryRepository)
+    configureRouting(hashingService, userDataSource, tokenService, tokenConfig, categoryRepository, habitRepository)
 }

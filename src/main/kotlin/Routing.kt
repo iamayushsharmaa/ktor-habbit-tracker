@@ -3,6 +3,8 @@ package com.example
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.example.data.auth.user.UserDataSource
+import com.example.data.habits.HabitRepository
+import com.example.data.habits.habit
 import com.example.data.habits.repository.CategoryRepository
 import com.example.data.habits.route.category
 import com.example.security.hashing.HashingService
@@ -30,7 +32,8 @@ fun Application.configureRouting(
     userDataSource: UserDataSource,
     tokenService: TokenService,
     tokenConfig: TokenConfig,
-    categoryRepository: CategoryRepository
+    categoryRepository: CategoryRepository,
+    habitRepository: HabitRepository
 ) {
     routing {
         signUp(hashingService,userDataSource)
@@ -40,7 +43,7 @@ fun Application.configureRouting(
 
 
         category(categoryRepository)
-
+        habit(habitRepository)
         get("/") {
             call.respondText("Hello World!")
         }
