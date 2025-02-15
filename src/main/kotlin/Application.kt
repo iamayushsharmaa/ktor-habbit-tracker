@@ -8,6 +8,7 @@ import com.example.data.habits.HabitRepositoryImpl
 import com.example.data.habits.repository.Categories
 import com.example.data.habits.repository.CategoryRepository
 import com.example.data.habits.repository.CategoryRepositoryImpl
+import com.example.di.mainModule
 import com.example.security.hashing.SHA256HashingService
 import com.example.security.token.JwtTokenService
 import com.example.security.token.TokenConfig
@@ -28,25 +29,7 @@ fun main(args: Array<String>) {
 fun Application.module() {
     install(Koin) {
         slf4jLogger()
-        modules(org.koin.dsl.module {
-            single<MongoClient> {
-                val connectionString = System.getenv("MONGO_URI")
-                MongoClients.create(connectionString)
-            }
-            single {
-                val mongoClient: MongoClient = get()
-                mongoClient.getDatabase("Habits")
-            }
-            single<UserDataSource> {
-                UserDataSourceImpl(get())
-            }
-            single<CategoryRepository>{
-                CategoryRepositoryImpl(get())
-            }
-            single<HabitRepository> {
-                HabitRepositoryImpl(get())
-            }
-        })
+        modules(mainModule)
     }
 
     val userDataSource by inject<UserDataSource>()

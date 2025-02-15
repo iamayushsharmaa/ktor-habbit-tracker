@@ -1,5 +1,6 @@
 package com.example.data.auth.user
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
@@ -7,7 +8,8 @@ import org.bson.types.ObjectId
 
 @Serializable
 data class User(
-    @BsonId val id: String = ObjectId().toString(),
+    @SerialName("_id")
+    val id: String = ObjectId().toString(),
     val username: String,
     val password: String,
     val salt: String

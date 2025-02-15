@@ -1,17 +1,18 @@
 package com.example.data.habits
 
-import com.example.data.habits.response.HabitCategory
-import com.mongodb.client.MongoDatabase
 import com.mongodb.client.model.Filters
+import com.mongodb.kotlin.client.coroutine.MongoDatabase
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.toList
 
 class HabitRepositoryImpl(
-    db: MongoDatabase
+    database: MongoDatabase
 ): HabitRepository {
 
     companion object{
         private val HABIT_COLLECTION = "Habits"
     }
-    private val habits = db.getCollection<Habit>(HABIT_COLLECTION, Habit::class.java)
+    private val habits = database.getCollection<Habit>(HABIT_COLLECTION)
 
     override suspend fun createHabit(habit: Habit): String {
         habits.insertOne(habit)

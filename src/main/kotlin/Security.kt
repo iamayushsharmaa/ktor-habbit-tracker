@@ -23,7 +23,7 @@ import org.slf4j.event.*
 fun Application.configureSecurity(config: TokenConfig) {
     authentication {
         jwt {
-            realm = this@configureSecurity.environment.config.property("jwt.Realm").getString()
+            realm = this@configureSecurity.environment.config.property("jwt.realm").getString()
             verifier(
                 JWT
                     .require(Algorithm.HMAC256(config.secret))

@@ -41,9 +41,9 @@ fun Application.configureRouting(
         authenticate()
         getSecretInfo()
 
-
         category(categoryRepository)
         habit(habitRepository)
+
         get("/") {
             call.respondText("Hello World!")
         }
