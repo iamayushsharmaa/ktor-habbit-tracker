@@ -16,7 +16,7 @@ fun Route.habit(
         val userId = principal.payload.getClaim("userId").asString()
             ?: throw IllegalArgumentException("User ID not found in token")
 
-        val habit = call.receive<Habit>().copy(userId = userId)
+        val habit = call.receive<HabitRequest>().copy(userId = userId)
         val habitId = habitRepository.createHabit(habit)
         call.respond(HttpStatusCode.Created, mapOf("id" to habitId))
     }
@@ -56,9 +56,9 @@ fun Route.habit(
         val habitId = call.parameters["id"]
             ?: throw IllegalArgumentException("Habit ID is required")
 
-        val habit = call.receive<Habit>()
+        val habit = call.receive<HabitCompletion>()
 
-        if (habit.id != habitId) {
+        if (habit.habitId != habitId) {
             throw IllegalArgumentException("Habit ID in the body does not match the URL")
         }
         val isUpdated = habitRepository.updateHabit(userId, habit)

@@ -1,38 +1,20 @@
 package com.example
 
-import com.auth0.jwt.JWT
-import com.auth0.jwt.algorithms.Algorithm
 import com.example.data.auth.user.UserDataSource
 import com.example.data.habits.HabitRepository
 import com.example.data.habits.habit
-import com.example.data.habits.repository.CategoryRepository
-import com.example.data.habits.route.category
 import com.example.security.hashing.HashingService
 import com.example.security.token.TokenConfig
 import com.example.security.token.TokenService
-import com.mongodb.client.*
-import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.*
-import io.ktor.server.config.*
-import io.ktor.server.plugins.calllogging.*
-import io.ktor.server.plugins.contentnegotiation.*
-import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import org.koin.dsl.module
-import org.koin.ktor.plugin.Koin
-import org.koin.logger.slf4jLogger
-import org.slf4j.event.*
 
 fun Application.configureRouting(
     hashingService: HashingService,
     userDataSource: UserDataSource,
     tokenService: TokenService,
     tokenConfig: TokenConfig,
-    categoryRepository: CategoryRepository,
     habitRepository: HabitRepository
 ) {
     routing {
@@ -41,7 +23,7 @@ fun Application.configureRouting(
         authenticate()
         getSecretInfo()
 
-        category(categoryRepository)
+        //category(categoryRepository)
         habit(habitRepository)
 
         get("/") {
