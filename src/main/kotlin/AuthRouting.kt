@@ -82,7 +82,7 @@ fun Route.signIn(
             config = tokenConfig,
             TokenClaim(
                 name = "userId",
-                value = user.id.toString()
+                value = user.id
             )
         )
 
