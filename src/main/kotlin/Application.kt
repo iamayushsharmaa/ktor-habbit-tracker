@@ -34,13 +34,6 @@ fun Application.module() {
 
     val habitRepository by inject<HabitRepository>()
 
-//    val categoryRepository by inject<CategoryRepository>()
-//    runBlocking {
-//        if (categoryRepository.getAllCategory().isEmpty()) {
-//            categoryRepository.insertAllCategory(Categories.categories)
-//        }
-//    }
-
     configureSerialization()
     configureSecurity(tokenConfig)
     configureFrameworks()

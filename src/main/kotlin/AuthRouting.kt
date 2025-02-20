@@ -1,6 +1,5 @@
 package com.example
 
-import com.example.authenticate
 import com.example.data.auth.request.AuthRequest
 import com.example.data.auth.response.AuthResponse
 import com.example.data.auth.user.User
@@ -29,7 +28,7 @@ fun Route.signUp (
         val arefieldBlank = request.username.isBlank() || request.password.isBlank()
         val isPwTooShort = request.password.length < 8
 
-        if (arefieldBlank || isPwTooShort){
+        if (arefieldBlank || isPwTooShort) {
             call.respond(HttpStatusCode.Conflict)
             return@post
         }
@@ -41,7 +40,7 @@ fun Route.signUp (
             salt = saltedHash.salt
         )
         val wasAknowleged = userDataSource.insertUser(user)
-        if (!wasAknowleged){
+        if (!wasAknowleged) {
             call.respond(HttpStatusCode.Conflict)
             return@post
         }
@@ -54,7 +53,7 @@ fun Route.signIn(
     userDataSource: UserDataSource,
     tokenService: TokenService,
     tokenConfig: TokenConfig
-){
+) {
     post("signin") {
         val request = call.receiveNullable<AuthRequest>() ?: kotlin.run {
             call.respond(HttpStatusCode.BadRequest)
@@ -62,7 +61,7 @@ fun Route.signIn(
         }
 
         val user = userDataSource.getUserByUsername(request.username)
-        if (user == null){
+        if (user == null) {
             call.respond(HttpStatusCode.Conflict, "Incorrect username or password")
             return@post
         }
@@ -74,7 +73,7 @@ fun Route.signIn(
                 salt = user.salt
             )
         )
-        if (!isValidPassword){
+        if (!isValidPassword) {
             call.respond(HttpStatusCode.Conflict, "Incorrect username or password")
             return@post
         }
@@ -96,19 +95,20 @@ fun Route.signIn(
     }
 }
 
-fun Route.authenticate(){
+fun Route.authenticate() {
     authenticate {
-        get("authenticate"){
+        get("authenticate") {
             call.respond(HttpStatusCode.OK)
         }
     }
 }
-fun Route.getSecretInfo(){
+
+fun Route.getSecretInfo() {
     authenticate {
-        get("secret"){
+        get("secret") {
             val principle = call.principal<JWTPrincipal>()
-            val userId = principle?.getClaim("userId",String::class)
-            call.respond(HttpStatusCode.OK,"Your userId is $userId")
+            val userId = principle?.getClaim("userId", String::class)
+            call.respond(HttpStatusCode.OK, "Your userId is $userId")
         }
     }
 }

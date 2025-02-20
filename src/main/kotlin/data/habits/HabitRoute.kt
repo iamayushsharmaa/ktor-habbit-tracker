@@ -11,7 +11,7 @@ import java.time.LocalDate
 fun Route.habit(
     habitRepository: HabitRepository
 ){
-    authenticate("auth-jwt") {
+    authenticate {
         post("/habits") {
             val principal = call.principal<JWTPrincipal>()
                 ?: throw IllegalArgumentException("User not authenticated")
