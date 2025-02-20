@@ -16,21 +16,25 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-fun Route.signUp (
+fun Route.signUp(
     hashingService: HashingService,
     userDataSource: UserDataSource
-){
+) {
     post("signup") {
         val request = call.receiveNullable<AuthRequest>() ?: kotlin.run {
-            call.respond(HttpStatusCode.BadRequest)
+            call.respond(HttpStatusCode.BadRequest, "Invalid request body")
             return@post
         }
-        val arefieldBlank = request.username.isBlank() || request.password.isBlank()
-        val isPwTooShort = request.password.length < 8
 
-        if (arefieldBlank || isPwTooShort) {
-            call.respond(HttpStatusCode.Conflict)
-            return@post
+        when {
+            request.username.isBlank() || request.password.isBlank() -> {
+                call.respond(HttpStatusCode.BadRequest, "Username and password cannot be blank")
+                return@post
+            }
+            request.password.length < 8 -> {
+                call.respond(HttpStatusCode.BadRequest, "Password must be at least 8 characters")
+                return@post
+            }
         }
 
         val saltedHash = hashingService.generateSaltedHash(request.password)
@@ -39,12 +43,12 @@ fun Route.signUp (
             password = saltedHash.hash,
             salt = saltedHash.salt
         )
-        val wasAknowleged = userDataSource.insertUser(user)
-        if (!wasAknowleged) {
-            call.respond(HttpStatusCode.Conflict)
+        val wasAcknowledged = userDataSource.insertUser(user)
+        if (!wasAcknowledged) {
+            call.respond(HttpStatusCode.Conflict, "Username already exists")
             return@post
         }
-        call.respond(HttpStatusCode.OK)
+        call.respond(HttpStatusCode.OK, "User created successfully")
     }
 }
 
@@ -56,25 +60,20 @@ fun Route.signIn(
 ) {
     post("signin") {
         val request = call.receiveNullable<AuthRequest>() ?: kotlin.run {
-            call.respond(HttpStatusCode.BadRequest)
+            call.respond(HttpStatusCode.BadRequest, "Invalid request body")
             return@post
         }
 
         val user = userDataSource.getUserByUsername(request.username)
-        if (user == null) {
-            call.respond(HttpStatusCode.Conflict, "Incorrect username or password")
-            return@post
-        }
-
-        val isValidPassword = hashingService.verify(
-            value = request.password,
-            saltedHash = SaltedHash(
-                hash = user.password,
-                salt = user.salt
+        if (user == null || !hashingService.verify(
+                value = request.password,
+                saltedHash = SaltedHash(
+                    hash = user.password,
+                    salt = user.salt
+                )
             )
-        )
-        if (!isValidPassword) {
-            call.respond(HttpStatusCode.Conflict, "Incorrect username or password")
+        ) {
+            call.respond(HttpStatusCode.Unauthorized, "Incorrect username or password")
             return@post
         }
 
@@ -106,8 +105,12 @@ fun Route.authenticate() {
 fun Route.getSecretInfo() {
     authenticate {
         get("secret") {
-            val principle = call.principal<JWTPrincipal>()
-            val userId = principle?.getClaim("userId", String::class)
+            val principal = call.principal<JWTPrincipal>()
+            val userId = principal?.getClaim("userId", String::class)
+            if (userId == null) {
+                call.respond(HttpStatusCode.Unauthorized, "Invalid or missing token")
+                return@get
+            }
             call.respond(HttpStatusCode.OK, "Your userId is $userId")
         }
     }

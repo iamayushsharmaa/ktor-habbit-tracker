@@ -1,12 +1,18 @@
 package com.example
 
+import com.example.data.auth.user.User
 import com.example.data.auth.user.UserDataSource
 import com.example.data.habits.HabitRepository
+import com.example.data.habits.repository.Categories
+import com.example.data.habits.repository.CategoryRepository
 import com.example.di.mainModule
 import com.example.security.hashing.SHA256HashingService
 import com.example.security.token.JwtTokenService
 import com.example.security.token.TokenConfig
 import io.ktor.server.application.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.koin.ktor.ext.inject
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
@@ -20,7 +26,6 @@ fun Application.module() {
         slf4jLogger()
         modules(mainModule)
     }
-
     val userDataSource by inject<UserDataSource>()
 
     val tokenService = JwtTokenService()
@@ -32,11 +37,25 @@ fun Application.module() {
     )
     val hashingService = SHA256HashingService()
 
+    GlobalScope.launch {
+        val user = User(
+            username = "ayushsh",
+            password = "netfreak",
+            salt = "salt"
+        )
+        userDataSource.insertUser(user)
+    }
     val habitRepository by inject<HabitRepository>()
+    val categoryRepository by inject<CategoryRepository>()
 
+    runBlocking {
+        if (categoryRepository.getAllCategory().isEmpty()) {
+            categoryRepository.insertAllCategory(Categories.categories)
+        }
+    }
     configureSerialization()
     configureSecurity(tokenConfig)
     configureFrameworks()
     configureMonitoring()
-    configureRouting(hashingService, userDataSource, tokenService, tokenConfig, habitRepository)
+    configureRouting(hashingService, userDataSource, tokenService, tokenConfig, habitRepository,categoryRepository)
 }

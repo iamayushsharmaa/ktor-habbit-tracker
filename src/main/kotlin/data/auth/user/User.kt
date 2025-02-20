@@ -8,8 +8,7 @@ import org.bson.types.ObjectId
 
 @Serializable
 data class User(
-    @SerialName("_id")
-    val id: String = ObjectId().toString(),
+    @SerialName("_id") val id: String = ObjectId().toString(),
     val username: String,
     val password: String,
     val salt: String

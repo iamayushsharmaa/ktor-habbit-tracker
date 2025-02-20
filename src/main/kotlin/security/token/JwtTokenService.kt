@@ -15,6 +15,4 @@ class JwtTokenService: TokenService {
         }
         return token.sign(Algorithm.HMAC256(config.secret))
     }
-
-
 }

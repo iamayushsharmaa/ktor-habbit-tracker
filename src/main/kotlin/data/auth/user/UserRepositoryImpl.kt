@@ -14,7 +14,6 @@ class UserDataSourceImpl(
         private val USER_COLLECTION  = "User"
     }
 
-
     val users = database.getCollection<User>(USER_COLLECTION)
 
     override suspend fun getUserByUsername(username: String): User? {

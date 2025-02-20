@@ -4,6 +4,8 @@ import com.example.data.auth.user.UserDataSource
 import com.example.data.auth.user.UserDataSourceImpl
 import com.example.data.habits.HabitRepository
 import com.example.data.habits.HabitRepositoryImpl
+import com.example.data.habits.repository.CategoryRepository
+import com.example.data.habits.repository.CategoryRepositoryImpl
 import com.mongodb.ConnectionString
 import com.mongodb.MongoClientSettings
 import com.mongodb.ServerApi
@@ -31,7 +33,9 @@ val mainModule = module {
     single<UserDataSource> {
         UserDataSourceImpl(get())
     }
-
+    single<CategoryRepository>{
+        CategoryRepositoryImpl(get())
+    }
     single<HabitRepository> {
         HabitRepositoryImpl(get())
     }
