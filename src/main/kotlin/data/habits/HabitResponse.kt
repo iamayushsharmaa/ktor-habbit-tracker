@@ -16,5 +16,6 @@ data class HabitResponse(
     @Contextual val startDate: LocalDate,
     val isActive: Boolean,
     val isLocked: Boolean,
-    val isCompleted: Boolean
+    val isCompleted: Boolean,
+    val completionHistory: List<HabitCompletion> = emptyList()
 )
