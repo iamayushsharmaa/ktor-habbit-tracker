@@ -58,16 +58,33 @@ fun Route.habit(
             val habitId = call.parameters["id"]
                 ?: throw IllegalArgumentException("Habit ID is required")
 
-            val habit = call.receive<HabitCompletion>()
-
-            if (habit.habitId != habitId) {
-                throw IllegalArgumentException("Habit ID in the body does not match the URL")
+            val request = try {
+                call.receive<HabitCompletionRequest>()
+            } catch (e: Exception) {
+                return@put call.respond(HttpStatusCode.BadRequest, "Invalid request body")
             }
-            val isUpdated = habitRepository.updateHabit(userId, habit)
-            if (isUpdated) {
-                call.respond(HttpStatusCode.OK)
-            } else {
-                call.respond(HttpStatusCode.NotFound, "Habit not found or does not belong to the user")
+            val date = LocalDate.now()
+
+            val result = habitRepository.completeHabit(
+                habitId = habitId,
+                date = date,
+                isCompleted = request.isCompleted,
+                userId = userId
+            )
+
+            when {
+                result.isSuccess -> {
+                    call.respond(HttpStatusCode.OK, result.getOrNull()!!)
+                }
+                result.isFailure -> {
+                    val exception = result.exceptionOrNull()!!
+                    when (exception) {
+                        is IllegalArgumentException -> call.respond(HttpStatusCode.BadRequest, exception.message ?: "Bad Request")
+                        is SecurityException -> call.respond(HttpStatusCode.Forbidden, exception.message ?: "Forbidden")
+                        is IllegalStateException -> call.respond(HttpStatusCode.Conflict, exception.message ?: "Conflict")
+                        else -> call.respond(HttpStatusCode.InternalServerError, "An error occurred: ${exception.message}")
+                    }
+                }
             }
         }
 

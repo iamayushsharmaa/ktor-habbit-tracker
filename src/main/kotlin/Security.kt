@@ -22,7 +22,7 @@ import org.slf4j.event.*
 
 fun Application.configureSecurity(config: TokenConfig) {
     authentication {
-        jwt {
+        jwt("auth-jwt") {
             realm = this@configureSecurity.environment.config.property("jwt.realm").getString()
             verifier(
                 JWT
