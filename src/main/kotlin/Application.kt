@@ -37,14 +37,6 @@ fun Application.module() {
     )
     val hashingService = SHA256HashingService()
 
-    GlobalScope.launch {
-        val user = User(
-            username = "ayushsh",
-            password = "netfreak",
-            salt = "salt"
-        )
-        userDataSource.insertUser(user)
-    }
     val habitRepository by inject<HabitRepository>()
     val categoryRepository by inject<CategoryRepository>()
 
