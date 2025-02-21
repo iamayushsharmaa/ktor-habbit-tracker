@@ -10,6 +10,8 @@ import com.example.security.hashing.SHA256HashingService
 import com.example.security.token.JwtTokenService
 import com.example.security.token.TokenConfig
 import io.ktor.server.application.*
+import io.ktor.server.engine.*
+import io.ktor.server.netty.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -19,6 +21,8 @@ import org.koin.logger.slf4jLogger
 
 fun main(args: Array<String>) {
     io.ktor.server.netty.EngineMain.main(args)
+    embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
+    }.start(wait = true)
 }
 
 fun Application.module() {
