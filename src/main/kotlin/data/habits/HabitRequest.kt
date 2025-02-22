@@ -25,5 +25,8 @@ data class Goal(
 )
 
 enum class Frequency {
-    DAILY, WEEKLY, MONTHLY
+    EVERYDAY,
+    ALTERNATE,
+    WEEKLY,
+    MONTHLY
 }
