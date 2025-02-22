@@ -22,7 +22,7 @@ class HabitRepositoryImpl(
     override suspend fun createHabit(habit: HabitRequest) {
         val habitResponse = HabitResponse(
             habitId = habit.habitId,
-            userId = habit.userId,
+            userId = habit.userId!!,
             name = habit.name,
             icon = habit.icon,
             iconBackground = habit.iconBackground,

@@ -1,5 +1,6 @@
 package com.example.data.habits
 
+import data.habits.LocalDateSerializer
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import java.time.LocalDate
@@ -15,7 +16,7 @@ data class HabitResponse(
     val value: String,
     val unit: String,
     val frequency: Frequency,
-    @Contextual val startDate: LocalDate,
+    @Serializable(with = LocalDateSerializer::class)  val startDate: LocalDate,
     val isActive: Boolean,
     val isLocked: Boolean,
     val isCompleted: Boolean,

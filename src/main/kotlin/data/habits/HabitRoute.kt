@@ -6,6 +6,7 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.serialization.SerializationException
 import java.time.LocalDate
 
 fun Route.habit(
@@ -13,14 +14,20 @@ fun Route.habit(
 ){
     authenticate {
         post("/habits") {
-            val principal = call.principal<JWTPrincipal>()
-                ?: throw IllegalArgumentException("User not authenticated")
-            val userId = principal.payload.getClaim("userId").asString()
-                ?: throw IllegalArgumentException("User ID not found in token")
+            try {
+                val principal = call.principal<JWTPrincipal>()
+                    ?: throw IllegalArgumentException("User not authenticated")
+                val userId = principal.payload.getClaim("userId").asString()
+                    ?: throw IllegalArgumentException("User ID not found in token")
 
-            val habit = call.receive<HabitRequest>().copy(userId = userId)
-            val habitId = habitRepository.createHabit(habit)
-            call.respond(HttpStatusCode.Created, mapOf("habitId" to habitId))
+                val habit = call.receive<HabitRequest>().copy(userId = userId)
+                val habitId = habitRepository.createHabit(habit)
+                call.respond(HttpStatusCode.Created, mapOf("habitId" to habitId))
+            } catch (e: SerializationException) {
+                call.respond(HttpStatusCode.BadRequest, "Invalid request data: ${e.message}")
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.InternalServerError, "Server error: ${e.message}")
+            }
         }
 
         get("/habits") {
