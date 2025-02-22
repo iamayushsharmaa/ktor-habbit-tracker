@@ -12,6 +12,8 @@ data class HabitResponse(
     val icon: String,
     val iconBackground: String,
     val description: String,
+    val value: String,
+    val unit: String,
     val frequency: Frequency,
     @Contextual val startDate: LocalDate,
     val isActive: Boolean,

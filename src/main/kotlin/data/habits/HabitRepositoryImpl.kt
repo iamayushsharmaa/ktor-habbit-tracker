@@ -31,7 +31,9 @@ class HabitRepositoryImpl(
             startDate = habit.startDate,
             isActive = habit.isActive,
             isLocked = false,
-            isCompleted = false
+            isCompleted = false,
+            value = habit.goal.value,
+            unit = habit.goal.unit
         )
         habits.insertOne(habitResponse)
     }
@@ -69,7 +71,9 @@ class HabitRepositoryImpl(
                 isActive = habit.isActive,
                 isLocked = isLocked,
                 isCompleted = isCompleted,
-                completionHistory = habitHistory
+                completionHistory = habitHistory,
+                value = habit.value,
+                unit = habit.unit
             )
         }
     }
@@ -92,6 +96,11 @@ class HabitRepositoryImpl(
         val result = habits.deleteOne(filter)
         return result.deletedCount == 1L
     }
+
+    override suspend fun updateGoal(userId: String, habitId: String, goal: GoalRequest) {
+
+    }
+
 
     override suspend fun completeHabit(
         habitId: String,

@@ -7,6 +7,7 @@ interface HabitRepository {
     suspend fun getHabitsByUserId(userId: String, date: LocalDate): List<HabitResponse>
     suspend fun getHabitById(userId: String, habitId: String): HabitResponse?
     suspend fun deleteHabit(userId: String, habitId: String): Boolean
+    suspend fun updateGoal(userId: String, habitId: String, goal: GoalRequest)
     suspend fun completeHabit(
         habitId: String,
         date: LocalDate,

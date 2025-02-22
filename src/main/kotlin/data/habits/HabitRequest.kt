@@ -12,9 +12,16 @@ data class HabitRequest(
     val icon: String,
     val iconBackground: String,
     val description: String,
+    val goal: Goal,
     val frequency: Frequency,
     @Contextual val startDate: LocalDate,
     val isActive: Boolean
+)
+
+@Serializable
+data class Goal(
+    val value: String,
+    val unit: String
 )
 
 enum class Frequency {
